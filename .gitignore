@@ -2,8 +2,6 @@
 .vscode/
 /.gradle/
 mock/
-build/
-output/
 *.iml
 /classes/
 .DS_Store
