@@ -2,8 +2,8 @@
   "compilerOptions": {
     "baseUrl": "../src",
     "outDir": "../output/out/src",
-    "module": "commonjs",
-    "target": "es3",
+    "module": "es2015",
+    "target": "es5",
     "moduleResolution": "node",
     "lib": ["es5"],
     "strict": true,
