@@ -2,11 +2,10 @@
   "compilerOptions": {
     "baseUrl": "../src",
     "outDir": "../output/out/src",
-    "module": "esnext",
-    "target": "es5",
+    "module": "commonjs",
+    "target": "es3",
     "moduleResolution": "node",
-    "lib": ["es2015"],
-    "sourceMap": true,
+    "lib": ["es5"],
     "strict": true,
     "allowSyntheticDefaultImports": true,
     "importHelpers": true,
@@ -14,8 +13,7 @@
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
-    "suppressImplicitAnyIndexErrors": true,
-    "declaration": true
+    "suppressImplicitAnyIndexErrors": true
   },
   "include": ["../src"]
 }

@@ -1,12 +1,14 @@
-import * as tslib_1 from "tslib";
-import path from "path";
-import webpack from "webpack";
-import HTMLPlugin from "html-webpack-plugin";
-import StylelintPlugin from "stylelint-webpack-plugin";
-import ForkTSCheckerPlugin from "fork-ts-checker-webpack-plugin";
-import TSImportPlugin from "ts-import-plugin";
-import chalk from "chalk";
-import DevServer from "webpack-dev-server";
+"use strict";
+exports.__esModule = true;
+var tslib_1 = require("tslib");
+var path_1 = require("path");
+var webpack_1 = require("webpack");
+var html_webpack_plugin_1 = require("html-webpack-plugin");
+var stylelint_webpack_plugin_1 = require("stylelint-webpack-plugin");
+var fork_ts_checker_webpack_plugin_1 = require("fork-ts-checker-webpack-plugin");
+var ts_import_plugin_1 = require("ts-import-plugin");
+var chalk_1 = require("chalk");
+var webpack_dev_server_1 = require("webpack-dev-server");
 function webpackConfig(env) {
     return [
         {
@@ -15,19 +17,19 @@ function webpackConfig(env) {
             output: {
                 path: env.dist /* production 输出目录前缀 */,
                 filename: "static/js/[name].js" /* development、production 输出文件 */,
-                publicPath: "/" /* development 输入目录前缀 */,
+                publicPath: "/" /* development 输入目录前缀 */
             },
             devtool: "cheap-module-source-map",
             optimization: {
                 splitChunks: {
                     chunks: "async",
-                    automaticNameDelimiter: "-",
-                },
+                    automaticNameDelimiter: "-"
+                }
             },
             resolve: {
                 extensions: [".ts", ".tsx", ".js", ".jsx", ".sass", ".less"] /* require、import时这些后缀不需要添加 */,
                 modules: [env.src, "node_modules"] /* 导入文件默认在src、node_modules下查找 */,
-                alias: env.alias,
+                alias: env.alias
             },
             module: {
                 rules: [
@@ -38,9 +40,9 @@ function webpackConfig(env) {
                         exclude: /node_modules/,
                         options: {
                             getCustomTransformers: function () { return ({
-                                before: [TSImportPlugin({ libraryName: "antd", libraryDirectory: "es", style: true })],
-                            }); },
-                        },
+                                before: [ts_import_plugin_1["default"]({ libraryName: "antd", libraryDirectory: "es", style: true })]
+                            }); }
+                        }
                     },
                     {
                         test: /\.(css|less)$/,
@@ -50,55 +52,55 @@ function webpackConfig(env) {
                             {
                                 loader: "less-loader",
                                 options: {
-                                    javascriptEnabled: true /* Inline-javascript, enabled can use Mixins */,
-                                },
+                                    javascriptEnabled: true /* Inline-javascript, enabled can use Mixins */
+                                }
                             },
-                        ],
+                        ]
                     },
                     {
                         test: /\.(png|jpe?g|gif|webp)$/,
                         loader: "url-loader",
                         query: {
                             limit: env.imgLimit || 1024 /* Generate separate images beyond limit otherwise use picture stream format. */,
-                            name: "static/img/[name].[hash:8].[ext]",
-                        },
+                            name: "static/img/[name].[hash:8].[ext]"
+                        }
                     },
                     {
                         test: /\.(woff|woff2|eot|ttf|otf)$/,
                         loader: "file-loader",
                         options: {
-                            name: "static/font/[name].[hash:8].[ext]",
-                        },
+                            name: "static/font/[name].[hash:8].[ext]"
+                        }
                     },
                     {
                         test: /\.mp4$/,
-                        loader: "file-loader",
+                        loader: "file-loader"
                     },
-                ],
+                ]
             },
             plugins: [
-                new StylelintPlugin({
+                new stylelint_webpack_plugin_1["default"]({
                     configFile: env.stylelintConfig,
                     context: env.src,
                     files: ["**/*.less"],
-                    syntax: "less",
+                    syntax: "less"
                 }),
-                new ForkTSCheckerPlugin({
+                new fork_ts_checker_webpack_plugin_1["default"]({
                     tsconfig: env.tsConfig,
                     tslint: env.tslintConfig,
-                    workers: ForkTSCheckerPlugin.TWO_CPUS_FREE,
+                    workers: fork_ts_checker_webpack_plugin_1["default"].TWO_CPUS_FREE
                 }),
-                new HTMLPlugin({
-                    template: path.resolve(__dirname, env.src + "/index.html") /* 自动在该模板中导入 output 中的filename文件 */,
+                new html_webpack_plugin_1["default"]({
+                    template: path_1["default"].resolve(__dirname, env.src + "/index.html") /* 自动在该模板中导入 output 中的filename文件 */
                 }),
-                new webpack.HotModuleReplacementPlugin(),
-                new webpack.ProgressPlugin() /* 控制台显示加载进度 */,
-            ],
+                new webpack_1["default"].HotModuleReplacementPlugin(),
+                new webpack_1["default"].ProgressPlugin() /* 控制台显示加载进度 */,
+            ]
         },
     ];
 }
 function devServer(compiler, env) {
-    return new DevServer(compiler, {
+    return new webpack_dev_server_1["default"](compiler, {
         contentBase: env.contentBase /* 静态资源目录 */,
         watchContentBase: true /* contentBase目录下变更数据时自动刷新 */,
         host: "0.0.0.0" /* 使用localhost会导致报错 [WDS] Disconnected! */,
@@ -109,20 +111,20 @@ function devServer(compiler, env) {
         compress: true,
         overlay: {
             warnings: true,
-            errors: true,
-        },
+            errors: true
+        }
     });
 }
 function start(env) {
     var config = webpackConfig(env);
-    var compiler = webpack(config);
+    var compiler = webpack_1["default"](config);
     var server = devServer(compiler, env);
     server.listen(env.port, "0.0.0.0", function (error) {
         if (error) {
             console.error(error);
             process.exit(1);
         }
-        console.info(chalk(templateObject_1 || (templateObject_1 = tslib_1.__makeTemplateObject(["starting dev server on {green ", "://localhost:", "/} \n"], ["starting dev server on {green ", "://localhost:", "/} \\n"])), env.https ? "https" : "http", env.port));
+        console.info(chalk_1["default"](templateObject_1 || (templateObject_1 = tslib_1.__makeTemplateObject(["starting dev server on {green ", "://localhost:", "/} \n"], ["starting dev server on {green ", "://localhost:", "/} \\n"])), env.https ? "https" : "http", env.port));
         return null;
     });
     /* [中断进程, 软件终止信号]监听 ref：https://blog.csdn.net/sufwei/article/details/51610676 */
@@ -134,6 +136,5 @@ function start(env) {
     });
     return;
 }
-export default start;
+exports["default"] = start;
 var templateObject_1;
-//# sourceMappingURL=webpack.config.dev.js.map
