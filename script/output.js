@@ -48,6 +48,18 @@ function distribute() {
     fs.copySync("package.json", "output/dist/package.json", {dereference: true});
 }
 
+function removeDefault() {
+    console.info(chalk`{green.bold [task]} {white.bold remove default}`);
+
+    const devFile = fs.readFileSync("output/dist/lib/webpack.config.dev.js");
+    const newDevFile = devFile.toString().replace(/\[\"default\"\]/g, "");
+    fs.writeFileSync("output/dist/lib/webpack.config.dev.js", newDevFile);
+
+    const buildFile = fs.readFileSync("output/dist/lib/webpack.config.build.js");
+    const newBuildFile = buildFile.toString().replace(/\[\"default\"\]/g, "");
+    fs.writeFileSync("output/dist/lib/webpack.config.build.js", newBuildFile);
+}
+
 function output() {
     cleanup();
     checkCodeStyle();
@@ -55,6 +67,7 @@ function output() {
     lint();
     compile();
     distribute();
+    removeDefault();
 }
 
 output();

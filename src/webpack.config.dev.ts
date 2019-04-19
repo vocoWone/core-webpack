@@ -86,7 +86,6 @@ function webpackConfig(env: any): webpack.Configuration[] {
                 new ForkTSCheckerPlugin({
                     tsconfig: env.tsConfig,
                     tslint: env.tslintConfig,
-                    workers: ForkTSCheckerPlugin.TWO_CPUS_FREE,
                 }),
                 new HTMLPlugin({
                     template: path.resolve(__dirname, `${env.src}/index.html`) /* 自动在该模板中导入 output 中的filename文件 */,
@@ -138,4 +137,4 @@ function start(env: any): void {
 
     return;
 }
-export default start;
+export {start};

@@ -2,18 +2,11 @@
   "compilerOptions": {
     "baseUrl": "../src",
     "outDir": "../output/out/src",
-    "module": "es2015",
-    "target": "es5",
+    "module": "commonjs",
+    "target": "es3",
     "moduleResolution": "node",
-    "lib": ["es5"],
-    "strict": true,
-    "allowSyntheticDefaultImports": true,
-    "importHelpers": true,
-    "noImplicitAny": true,
-    "downlevelIteration": true,
-    "experimentalDecorators": true,
-    "forceConsistentCasingInFileNames": true,
-    "suppressImplicitAnyIndexErrors": true
+    "lib": ["es6"],
+    "allowSyntheticDefaultImports": true
   },
   "include": ["../src"]
 }

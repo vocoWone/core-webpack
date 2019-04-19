@@ -129,6 +129,7 @@ function webpackConfig(env: any): webpack.Configuration[] {
                 new ForkTSCheckerPlugin({
                     tsconfig: env.tsConfig,
                     tslint: env.tslintConfig,
+                    useTypescriptIncrementalApi: false,
                     workers: ForkTSCheckerPlugin.TWO_CPUS_FREE,
                 }),
                 new StylelintPlugin({
@@ -232,4 +233,4 @@ function build(env: any): void {
     return;
 }
 
-export default build;
+export {build};
