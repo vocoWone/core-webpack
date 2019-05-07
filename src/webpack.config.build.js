@@ -1,24 +1,24 @@
-import webpack from "webpack";
-import autoprefixer from "autoprefixer";
-import MiniCSSExtractPlugin from "mini-css-extract-plugin";
-import ForkTSCheckerPlugin from "fork-ts-checker-webpack-plugin";
-import HTMLPlugin from "html-webpack-plugin";
-import UglifyJSPlugin from "uglifyjs-webpack-plugin";
-import StylelintPlugin from "stylelint-webpack-plugin";
-import TSImportPlugin from "ts-import-plugin";
-import OptimizeCSSAssetsPlugin from "optimize-css-assets-webpack-plugin";
-import chalk from "chalk";
-import childProcess from "child_process";
-import fs from "fs-extra";
+const webpack = require("webpack");
+const autoprefixer = require("autoprefixer");
+const MiniCSSExtractPlugin = require("mini-css-extract-plugin");
+const ForkTSCheckerPlugin = require("fork-ts-checker-webpack-plugin");
+const HTMLPlugin = require("html-webpack-plugin");
+const UglifyJSPlugin = require("uglifyjs-webpack-plugin");
+const StylelintPlugin = require("stylelint-webpack-plugin");
+const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
+const chalk = require("chalk");
+const childProcess = require("child_process");
+const fs = require("fs-extra");
 
-function webpackConfig(env: any): webpack.Configuration[] {
+function webpackConfig(env) {
     return [
         {
             mode: "production",
             entry: `${env.src}/index.tsx`,
             output: {
                 path: env.output,
-                filename: `static/js/[name].[chunkhash:8].js`,
+                filename: "static/js/[name].[chunkhash:8].js",
+                publicPath: "/",
             },
             resolve: {
                 extensions: [".ts", ".tsx", ".js", ".jsx", ".less"],
@@ -66,9 +66,6 @@ function webpackConfig(env: any): webpack.Configuration[] {
                         options: {
                             configFile: env.tsConfig,
                             transpileOnly: true,
-                            getCustomTransformers: () => ({
-                                before: [TSImportPlugin({libraryName: "antd", libraryDirectory: "es", style: true})],
-                            }),
                         },
                     },
                     {
@@ -103,28 +100,28 @@ function webpackConfig(env: any): webpack.Configuration[] {
                         loader: "url-loader",
                         query: {
                             limit: env.imgLimit || 1024,
-                            name: `static/img/[name].[hash:8].[ext]`,
+                            name: "static/img/[name].[hash:8].[ext]",
                         },
                     },
                     {
                         test: /\.(woff|woff2|eot|ttf|otf)$/,
                         loader: "file-loader",
                         options: {
-                            name: `static/font/[name].[hash:8].[ext]`,
+                            name: "static/font/[name].[hash:8].[ext]",
                         },
                     },
                     {
                         test: /\.mp4$/,
                         loader: "file-loader",
                         options: {
-                            name: `static/mp4/[name].[hash:8].[ext]`,
+                            name: "static/mp4/[name].[hash:8].[ext]",
                         },
                     },
                 ],
             },
             plugins: [
                 new MiniCSSExtractPlugin({
-                    filename: `static/css/[name].[contenthash:8].css`,
+                    filename: "static/css/[name].[contenthash:8].css",
                 }),
                 new ForkTSCheckerPlugin({
                     tsconfig: env.tsConfig,
@@ -165,7 +162,7 @@ function webpackConfig(env: any): webpack.Configuration[] {
     ];
 }
 
-function spawn(command: string, params: string[], errorMessage: string): void {
+function spawn(command, params, errorMessage) {
     const isWindows = process.platform === "win32"; /* spawn with {shell: true} can solve .cmd resolving, but prettier doesn't run correctly on mac/linux */
     const result = childProcess.spawnSync(isWindows ? command + ".cmd" : command, params, {stdio: "inherit"});
     if (result.error) {
@@ -179,7 +176,7 @@ function spawn(command: string, params: string[], errorMessage: string): void {
     }
 }
 
-function build(env: any): void {
+function build(env) {
     /* clear console */
     process.stdout.write(process.platform === "win32" ? "\x1B[2J\x1B[0f" : "\x1B[2J\x1B[3J\x1B[H");
     console.info(chalk`{green.bold [task]} {white.bold check code style}`);
@@ -194,7 +191,7 @@ function build(env: any): void {
     console.info(chalk`{green.bold [task]} {white.bold webpack}`);
     const config = webpackConfig(env);
     const compiler = webpack(config);
-    compiler.run((error: any, stats: any) => {
+    compiler.run((error, stats) => {
         if (env.buildError) {
             env.buildError(error, stats);
             return;
@@ -218,7 +215,7 @@ function build(env: any): void {
                 process.exit(1);
             } else if (statsJSON.warnings.length) {
                 /* Ignore "Conflicting order between" warning, produced by "mini-css-extract-plugin" */
-                const warnings = statsJSON.warnings.filter((_: any) => _.indexOf("[mini-css-extract-plugin]\nConflicting order between") < 0);
+                const warnings = statsJSON.warnings.filter(_ => _.indexOf("[mini-css-extract-plugin]\nConflicting order between") < 0);
                 if (warnings.length > 0) {
                     console.error(chalk`{red.bold \n${warnings.length} Warning(s) Occurred:}\n`);
                     console.error(chalk`{red.bold ${warnings.join("\n\n")}}`);
@@ -233,4 +230,4 @@ function build(env: any): void {
     return;
 }
 
-export {build};
+exports.module = build;

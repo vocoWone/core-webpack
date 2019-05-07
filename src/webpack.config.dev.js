@@ -1,21 +1,20 @@
-import path from "path";
-import webpack from "webpack";
-import HTMLPlugin from "html-webpack-plugin";
-import StylelintPlugin from "stylelint-webpack-plugin";
-import ForkTSCheckerPlugin from "fork-ts-checker-webpack-plugin";
-import TSImportPlugin from "ts-import-plugin";
-import chalk from "chalk";
-import DevServer from "webpack-dev-server";
+const path = require("path");
+const webpack = require("webpack");
+const HTMLPlugin = require("html-webpack-plugin");
+const StylelintPlugin = require("stylelint-webpack-plugin");
+const ForkTSCheckerPlugin = require("fork-ts-checker-webpack-plugin");
+const chalk = require("chalk");
+const DevServer = require("webpack-dev-server");
 
-function webpackConfig(env: any): webpack.Configuration[] {
+function webpackConfig(env) {
     return [
         {
             mode: "development" /* development or production */,
             entry: [`webpack-dev-server/client?https://0.0.0.0:${env.port}`, "webpack/hot/dev-server", `${env.src}/index.tsx`] /* 需要打包文件"./src/index.tsx" 默认文件名为 main (公共js,如 react),"webpack-dev-server/client?https://0.0.0.0:3000"为按需加载js模块 */,
             output: {
                 path: env.dist /* production 输出目录前缀 */,
-                filename: `static/js/[name].js` /* development、production 输出文件 */,
-                publicPath: "/" /* development 输入目录前缀 */,
+                filename: "static/js/[name].js" /* development、production 输出文件 */,
+                publicPath: "/" /* development,production 输入目录前缀 */,
             },
             devtool: "cheap-module-source-map",
             optimization: {
@@ -36,11 +35,7 @@ function webpackConfig(env: any): webpack.Configuration[] {
                         include: [env.src],
                         loader: "ts-loader",
                         exclude: /node_modules/,
-                        options: {
-                            getCustomTransformers: () => ({
-                                before: [TSImportPlugin({libraryName: "antd", libraryDirectory: "es", style: true})],
-                            }),
-                        },
+                        options: {},
                     },
                     {
                         test: /\.(css|less)$/,
@@ -60,14 +55,14 @@ function webpackConfig(env: any): webpack.Configuration[] {
                         loader: "url-loader",
                         query: {
                             limit: env.imgLimit || 1024 /* Generate separate images beyond limit otherwise use picture stream format. */,
-                            name: `static/img/[name].[hash:8].[ext]`,
+                            name: "static/img/[name].[hash:8].[ext]",
                         },
                     },
                     {
                         test: /\.(woff|woff2|eot|ttf|otf)$/,
                         loader: "file-loader",
                         options: {
-                            name: `static/font/[name].[hash:8].[ext]`,
+                            name: "static/font/[name].[hash:8].[ext]",
                         },
                     },
                     {
@@ -97,7 +92,7 @@ function webpackConfig(env: any): webpack.Configuration[] {
     ];
 }
 
-function devServer(compiler: webpack.Compiler | webpack.MultiCompiler, env: any): DevServer {
+function devServer(compiler, env) {
     return new DevServer(compiler, {
         contentBase: env.contentBase /* 静态资源目录 */,
         watchContentBase: true /* contentBase目录下变更数据时自动刷新 */,
@@ -114,11 +109,11 @@ function devServer(compiler: webpack.Compiler | webpack.MultiCompiler, env: any)
     });
 }
 
-function start(env: any): void {
-    const config: webpack.Configuration[] = webpackConfig(env);
+function start(env) {
+    const config = webpackConfig(env);
     const compiler = webpack(config);
     const server = devServer(compiler, env);
-    server.listen(env.port, "0.0.0.0", (error: any) => {
+    server.listen(env.port, "0.0.0.0", error => {
         if (error) {
             console.error(error);
             process.exit(1);
@@ -129,7 +124,7 @@ function start(env: any): void {
 
     /* [中断进程, 软件终止信号]监听 ref：https://blog.csdn.net/sufwei/article/details/51610676 */
     ["SIGINT", "SIGTERM"].forEach(signal => {
-        process.on(signal as any, () => {
+        process.on(signal, () => {
             server.close();
             process.exit();
         });
@@ -137,4 +132,4 @@ function start(env: any): void {
 
     return;
 }
-export {start};
+exports.module = start;
