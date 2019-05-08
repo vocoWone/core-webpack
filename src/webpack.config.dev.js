@@ -106,6 +106,7 @@ function devServer(compiler, env) {
             warnings: true,
             errors: true,
         },
+        proxy: env.proxy,
     });
 }
 
