@@ -35,7 +35,7 @@ function webpackConfig(env) {
                         include: [env.src],
                         loader: "ts-loader",
                         exclude: /node_modules/,
-                        options: {},
+                        options: env.jsOptions,
                     },
                     {
                         test: /\.(css|less)$/,

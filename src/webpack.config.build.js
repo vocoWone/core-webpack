@@ -63,10 +63,7 @@ function webpackConfig(env) {
                         test: /\.(ts|tsx)$/,
                         include: [env.src],
                         loader: "ts-loader",
-                        options: {
-                            configFile: env.tsConfig,
-                            transpileOnly: true,
-                        },
+                        options: env.jsOptions,
                     },
                     {
                         test: /\.(css|less)$/,
