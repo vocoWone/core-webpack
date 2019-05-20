@@ -1,6 +1,5 @@
 const webpack = require("webpack");
 const chalk = require("chalk");
-const childProcess = require("child_process");
 const fs = require("fs-extra");
 
 function webpackConfig(env) {
@@ -22,33 +21,7 @@ function webpackConfig(env) {
     ];
 }
 
-function spawn(command, params, errorMessage) {
-    const isWindows = process.platform === "win32"; /* spawn with {shell: true} can solve .cmd resolving, but prettier doesn't run correctly on mac/linux */
-    const result = childProcess.spawnSync(isWindows ? command + ".cmd" : command, params, {stdio: "inherit"});
-    if (result.error) {
-        console.error(result.error);
-        process.exit(1);
-    }
-    if (result.status !== 0) {
-        console.error(chalk`{red.bold ${errorMessage}}`);
-        console.error(`non-zero exit code returned, code=${result.status}, command=${command} ${params.join(" ")}`);
-        process.exit(1);
-    }
-}
-
 function build(env) {
-    /* clear console */
-    process.stdout.write(process.platform === "win32" ? "\x1B[2J\x1B[0f" : "\x1B[2J\x1B[3J\x1B[H");
-    console.info(chalk`{green.bold [task]} {white.bold check code style}`);
-    spawn("prettier", ["--config", `${env.prettierConfig}`, "--list-different", `{${env.src},test}/**/*.{ts,tsx,less}`], "check code style failed, please format above files");
-
-    console.info(chalk`{green.bold [task]} {white.bold cleanup ${env.output}}`);
-    fs.emptyDirSync(env.output);
-
-    console.info(chalk`{green.bold [task]} {white.bold copy ${env.contentBase} folder to ${env.output}}`);
-    fs.copySync(env.contentBase, env.output, {dereference: true});
-
-    console.info(chalk`{green.bold [task]} {white.bold webpack}`);
     const config = webpackConfig(env);
     const compiler = webpack(config);
     compiler.run((error, stats) => {
@@ -84,4 +57,4 @@ function build(env) {
     return;
 }
 
-exports.module = build;
+module.exports = build;

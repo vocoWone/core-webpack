@@ -12,19 +12,15 @@ function webpackConfig(env) {
             optimization: {
                 splitChunks: {
                     chunks: "async",
-                    automaticNameDelimiter: "-"
-                }
+                    automaticNameDelimiter: "-",
+                },
             },
             resolve: env.resolve,
             module: {
-                rules: env.loaders
+                rules: env.loaders,
             },
-            plugins: [
-                ...env.plugins,
-                new webpack.HotModuleReplacementPlugin(),
-                new webpack.ProgressPlugin() /* 控制台显示加载进度 */
-            ]
-        }
+            plugins: [...env.plugins, new webpack.HotModuleReplacementPlugin(), new webpack.ProgressPlugin() /* 控制台显示加载进度 */],
+        },
     ];
 }
 
@@ -41,8 +37,8 @@ function devServer(compiler, env) {
         compress: true,
         overlay: {
             warnings: true,
-            errors: true
-        }
+            errors: true,
+        },
     });
 }
 
@@ -55,11 +51,7 @@ function start(env) {
             console.error(error);
             process.exit(1);
         }
-        console.info(
-            chalk`starting dev server on {green ${
-                env.https ? "https" : "http"
-            }://localhost:${env.port}/} \n`
-        );
+        console.info(chalk`starting dev server on {green ${env.https ? "https" : "http"}://localhost:${env.port}/} \n`);
         return null;
     });
 
@@ -73,4 +65,4 @@ function start(env) {
 
     return;
 }
-exports.module = start;
+module.exports = start;
